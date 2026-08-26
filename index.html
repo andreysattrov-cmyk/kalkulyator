@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кардон PRO — Калькулятор</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #080b12;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(230, 185, 30, 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(230, 185, 30, 0.04) 0%, transparent 60%),
+                radial-gradient(ellipse at 50% 100%, rgba(230, 185, 30, 0.03) 0%, transparent 50%);
+        }
+
+        /* ===== MAIN CARD ===== */
+        .card {
+            max-width: 520px;
+            width: 100%;
+            background: rgba(18, 24, 38, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 40px;
+            padding: 32px 28px 36px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow:
+                0 40px 80px rgba(0, 0, 0, 0.7),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04),
+                0 0 60px rgba(230, 185, 30, 0.03);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 20%, rgba(230, 185, 30, 0.03), transparent 50%);
+            pointer-events: none;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #e6b91e, #f5d44a);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 8px 24px rgba(230, 185, 30, 0.25);
+        }
+
+        .logo-text {
+            color: #f0f4ff;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: #e6b91e;
+        }
+
+        .badge {
+            background: rgba(230, 185, 30, 0.12);
+            border: 1px solid rgba(230, 185, 30, 0.15);
+            color: #e6b91e;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.35);
+            font-size: 13px;
+            font-weight: 400;
+            margin-top: 2px;
+            margin-bottom: 22px;
+            letter-spacing: 0.2px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== MODE TOGGLE ===== */
+        .mode-toggle {
+            display: flex;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 16px;
+            padding: 4px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            z-index: 1;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px 0;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            letter-spacing: 0.3px;
+            position: relative;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #e6b91e, #d4a812);
+            color: #080b12;
+            box-shadow: 0 4px 20px rgba(230, 185, 30, 0.3);
+        }
+
+        .mode-btn:not(.active):hover {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* ===== INPUTS ===== */
+        .input-group {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 12px 16px 10px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: border-color 0.3s ease, background 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .input-group:focus-within {
+            border-color: rgba(230, 185, 30, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .input-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255, 255, 255, 0.35);
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 2px;
+        }
+
+        .input-group label .label-icon {
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 4px 0 2px;
+            color: #f0f4ff;
+            font-size: 26px;
+            font-weight: 600;
+            outline: none;
+            letter-spacing: -0.3px;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.12);
+            font-weight: 400;
+            font-size: 20px;
+        }
+
+        .input-group input::-webkit-outer-spin-button,
+        .input-group input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .input-group input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .input-row .input-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        /* ===== RESULTS ===== */
+        .result-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 18px 20px;
+            margin: 18px 0 20px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(8px);
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .result-label {
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 500;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-label .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .result-label .dot.buy {
+            background: #4a7cf7;
+        }
+        .result-label .dot.sell {
+            background: #e6b91e;
+        }
+        .result-label .dot.profit {
+            background: #7ddf9a;
+        }
+        .result-label .dot.total {
+            background: #f27d9a;
+        }
+
+        .result-value {
+            color: #f0f4ff;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: -0.2px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .result-value.green {
+            color: #7ddf9a;
+        }
+        .result-value.gold {
+            color: #e6b91e;
+        }
+        .result-value.pink {
+            color: #f27d9a;
+        }
+        .result-value.blue {
+            color: #6db3f2;
+        }
+        .result-value.red {
+            color: #f27d7d;
+        }
+        .result-value.gray {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* ===== BUTTON ===== */
+        .clear-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 600;
+            padding: 14px 0;
+            width: 100%;
+            border-radius: 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 0.3px;
+        }
+
+        .clear-btn:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: rgba(255, 255, 255, 0.7);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .clear-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer-meta {
+            text-align: center;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.15);
+            margin-top: 16px;
+            letter-spacing: 0.3px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 420px) {
+            .card {
+                padding: 20px 16px 24px;
+                border-radius: 28px;
+            }
+            .logo-text {
+                font-size: 18px;
+            }
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 17px;
+            }
+            .input-group input {
+                font-size: 22px;
+            }
+            .result-value {
+                font-size: 16px;
+            }
+            .result-box {
+                padding: 14px 16px;
+            }
+            .badge {
+                font-size: 8px;
+                padding: 3px 10px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .input-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            .input-row .input-group {
+                margin-bottom: 12px;
+            }
+            .input-row .input-group:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(230, 185, 30, 0.3);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">🛞</div>
+            <div class="logo-text">Кардон<span>PRO</span></div>
+        </div>
+        <div class="badge">⚡ v2.0</div>
+    </div>
+    <div class="subtitle">Профессиональный расчёт кило / штучный</div>
+
+    <!-- MODE TOGGLE -->
+    <div class="mode-toggle">
+        <button class="mode-btn active" data-mode="kg">По кило</button>
+        <button class="mode-btn" data-mode="pcs">Поштучно</button>
+    </div>
+
+    <!-- INPUTS -->
+    <div id="inputsArea">
+        <div class="input-row">
+            <div class="input-group">
+                <label><span class="label-icon">💰</span> Закуп (за 1 кг)</label>
+                <input type="number" step="0.01" id="kgBuy" placeholder="0.00">
+            </div>
+            <div class="input-group">
+                <label><span class="label-icon">🏷️</span> Продажа (за 1 кг)</label>
+                <input type="number" step="0.01" id="kgSell" placeholder="0.00">
+            </div>
+        </div>
+        <div class="input-group">
+            <label><span class="label-icon">⚖️</span> Вес (килограмм)</label>
+            <input type="number" step="0.01" id="kgWeight" placeholder="Например 10">
+        </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="result-box">
+        <div class="result-row">
+            <span class="result-label"><span class="dot buy"></span> Закуп (сомони)</span>
+            <span class="result-value blue" id="buyPrice">0.00</span>
+        </div>
+        <div class="result-row">
+            <span class="result-label"><span class="dot sell"></span> Продажа (сомони)</span>
+            <span class="result-value gold" id="sellPrice">0.00</span>
+        </div>
+        <div class="result-row">
+            <span class="result-label"><span class="dot profit"></span> Фойда / Прибыль</span>
+            <span class="result-value green" id="profit">0.00</span>
+        </div>
+        <div class="result-row" style="border-bottom: none; padding-top: 4px;">
+            <span class="result-label"><span class="dot total"></span> Итог клиенту</span>
+            <span class="result-value pink" id="clientTotal">0.00</span>
+        </div>
+    </div>
+
+    <!-- BUTTON -->
+    <button class="clear-btn" id="resetBtn">⟳ Очистить всё</button>
+    <div class="footer-meta">Данные сохраняются автоматически · Сомони</div>
+</div>
+
+<script>
+    (function() {
+        let currentMode = 'kg';
+
+        let state = {
+            kgBuy: '',
+            kgSell: '',
+            kgWeight: '',
+            pcsBuy: '',
+            pcsSell: '',
+            pcsCount: ''
+        };
+
+        const inputsArea = document.getElementById('inputsArea');
+        const modeBtns = document.querySelectorAll('.mode-btn');
+
+        const elBuyPrice = document.getElementById('buyPrice');
+        const elSellPrice = document.getElementById('sellPrice');
+        const elProfit = document.getElementById('profit');
+        const elClientTotal = document.getElementById('clientTotal');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // LOAD
+        function loadState() {
+            const saved = localStorage.getItem('kardon_pro');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    for (let key in state) {
+                        if (parsed.hasOwnProperty(key)) state[key] = parsed[key];
+                    }
+                    if (parsed.currentMode) currentMode = parsed.currentMode;
+                } catch (e) {}
+            }
+        }
+
+        function saveState() {
+            const toSave = { ...state, currentMode };
+            localStorage.setItem('kardon_pro', JSON.stringify(toSave));
+        }
+
+        // RENDER
+        function renderInputs() {
+            if (currentMode === 'kg') {
+                inputsArea.innerHTML = `
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label><span class="label-icon">💰</span> Закуп (за 1 кг)</label>
+                            <input type="number" step="0.01" id="kgBuy" placeholder="0.00" value="${state.kgBuy}">
+                        </div>
+                        <div class="input-group">
+                            <label><span class="label-icon">🏷️</span> Продажа (за 1 кг)</label>
+                            <input type="number" step="0.01" id="kgSell" placeholder="0.00" value="${state.kgSell}">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label><span class="label-icon">⚖️</span> Вес (килограмм)</label>
+                        <input type="number" step="0.01" id="kgWeight" placeholder="Например 10" value="${state.kgWeight}">
+                    </div>
+                `;
+            } else {
+                inputsArea.innerHTML = `
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label><span class="label-icon">💰</span> Закуп (за 1 шт)</label>
+                            <input type="number" step="0.01" id="pcsBuy" placeholder="0.00" value="${state.pcsBuy}">
+                        </div>
+                        <div class="input-group">
+                            <label><span class="label-icon">🏷️</span> Продажа (за 1 шт)</label>
+                            <input type="number" step="0.01" id="pcsSell" placeholder="0.00" value="${state.pcsSell}">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label><span class="label-icon">📦</span> Количество (штук)</label>
+                        <input type="number" step="1" id="pcsCount" placeholder="Например 5" value="${state.pcsCount}">
+                    </div>
+                `;
+            }
+            attachEvents();
+        }
+
+        function attachEvents() {
+            const inputs = inputsArea.querySelectorAll('input');
+            inputs.forEach(inp => {
+                inp.addEventListener('input', function() {
+                    const id = this.id;
+                    if (state.hasOwnProperty(id)) {
+                        state[id] = this.value;
+                        saveState();
+                        calculate();
+                    }
+                });
+                inp.addEventListener('blur', function() {
+                    const id = this.id;
+                    if (state.hasOwnProperty(id)) {
+                        state[id] = this.value;
+                        saveState();
+                        calculate();
+                    }
+                });
+            });
+        }
+
+        // CALCULATE
+        function calculate() {
+            let buyTotal = 0, sellTotal = 0, profit = 0, clientTotal = 0;
+
+            if (currentMode === 'kg') {
+                const buy = parseFloat(state.kgBuy) || 0;
+                const sell = parseFloat(state.kgSell) || 0;
+                const weight = parseFloat(state.kgWeight) || 0;
+
+                buyTotal = buy * weight;
+                sellTotal = sell * weight;
+                clientTotal = sellTotal;
+                profit = sellTotal - buyTotal;
+            } else {
+                const buy = parseFloat(state.pcsBuy) || 0;
+                const sell = parseFloat(state.pcsSell) || 0;
+                const count = parseInt(state.pcsCount) || 0;
+
+                buyTotal = buy * count;
+                sellTotal = sell * count;
+                clientTotal = sellTotal;
+                profit = sellTotal - buyTotal;
+            }
+
+            elBuyPrice.textContent = buyTotal.toFixed(2);
+            elSellPrice.textContent = sellTotal.toFixed(2);
+
+            // Profit color
+            if (profit < 0) {
+                elProfit.style.color = '#f27d7d';
+                elProfit.textContent = profit.toFixed(2);
+            } else if (profit === 0) {
+                elProfit.style.color = 'rgba(255,255,255,0.3)';
+                elProfit.textContent = profit.toFixed(2);
+            } else {
+                elProfit.style.color = '#7ddf9a';
+                elProfit.textContent = profit.toFixed(2);
+            }
+
+            elClientTotal.textContent = clientTotal.toFixed(2);
+        }
+
+        // SET MODE
+        function setMode(mode) {
+            currentMode = mode;
+            modeBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === mode);
+            });
+            renderInputs();
+            calculate();
+            saveState();
+        }
+
+        // RESET
+        function resetAll() {
+            for (let key in state) {
+                state[key] = '';
+            }
+            renderInputs();
+            calculate();
+            saveState();
+        }
+
+        // INIT
+        function init() {
+            loadState();
+
+            modeBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === currentMode);
+                btn.addEventListener('click', function() {
+                    const mode = this.dataset.mode;
+                    if (mode !== currentMode) setMode(mode);
+                });
+            });
+
+            renderInputs();
+            calculate();
+            resetBtn.addEventListener('click', resetAll);
+        }
+
+        init();
+    })();
+</script>
+
+</body>
+</html>
