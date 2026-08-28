@@ -492,13 +492,13 @@
     <!-- HEADER -->
     <div class="header">
         <div class="logo">
-            <div class="logo-icon">🛞</div>
+            <div class="logo-icon">⬢</div>
             <div>
                 <div class="logo-text">Кардон<span>PRO</span></div>
                 <span class="logo-sub">Профессиональный расчёт</span>
             </div>
         </div>
-        <div class="badge">⚡ v2.0</div>
+        <div class="badge">• v2.0</div>
     </div>
 
     <!-- MODE TOGGLE -->
@@ -511,16 +511,16 @@
     <div id="inputsArea">
         <div class="input-row">
             <div class="input-group">
-                <label><span class="label-icon">💰</span> Закуп (за 1 кг)</label>
+                <label><span class="label-icon">↓</span> Закуп (за 1 кг)</label>
                 <input type="number" step="0.01" id="kgBuy" placeholder="0.00">
             </div>
             <div class="input-group">
-                <label><span class="label-icon">🏷️</span> Продажа (за 1 кг)</label>
+                <label><span class="label-icon">↑</span> Продажа (за 1 кг)</label>
                 <input type="number" step="0.01" id="kgSell" placeholder="0.00">
             </div>
         </div>
         <div class="input-group">
-            <label><span class="label-icon">⚖️</span> Вес (килограмм)</label>
+            <label><span class="label-icon">~</span> Вес (килограмм)</label>
             <input type="number" step="0.01" id="kgWeight" placeholder="Например 10">
         </div>
     </div>
@@ -597,16 +597,16 @@
                 inputsArea.innerHTML = `
                     <div class="input-row">
                         <div class="input-group">
-                            <label><span class="label-icon">💰</span> Закуп (за 1 кг)</label>
+                            <label><span class="label-icon">↓</span> Закуп (за 1 кг)</label>
                             <input type="number" step="0.01" id="kgBuy" placeholder="0.00" value="${state.kgBuy}">
                         </div>
                         <div class="input-group">
-                            <label><span class="label-icon">🏷️</span> Продажа (за 1 кг)</label>
+                            <label><span class="label-icon">↑</span> Продажа (за 1 кг)</label>
                             <input type="number" step="0.01" id="kgSell" placeholder="0.00" value="${state.kgSell}">
                         </div>
                     </div>
                     <div class="input-group">
-                        <label><span class="label-icon">⚖️</span> Вес (килограмм)</label>
+                        <label><span class="label-icon">~</span> Вес (килограмм)</label>
                         <input type="number" step="0.01" id="kgWeight" placeholder="Например 10" value="${state.kgWeight}">
                     </div>
                 `;
@@ -614,16 +614,16 @@
                 inputsArea.innerHTML = `
                     <div class="input-row">
                         <div class="input-group">
-                            <label><span class="label-icon">💰</span> Закуп (за 1 шт)</label>
+                            <label><span class="label-icon">↓</span> Закуп (за 1 шт)</label>
                             <input type="number" step="0.01" id="pcsBuy" placeholder="0.00" value="${state.pcsBuy}">
                         </div>
                         <div class="input-group">
-                            <label><span class="label-icon">🏷️</span> Продажа (за 1 шт)</label>
+                            <label><span class="label-icon">~</span> Продажа (за 1 шт)</label>
                             <input type="number" step="0.01" id="pcsSell" placeholder="0.00" value="${state.pcsSell}">
                         </div>
                     </div>
                     <div class="input-group">
-                        <label><span class="label-icon">📦</span> Количество (штук)</label>
+                        <label><span class="label-icon">#</span> Количество (штук)</label>
                         <input type="number" step="1" id="pcsCount" placeholder="Например 5" value="${state.pcsCount}">
                     </div>
                 `;
